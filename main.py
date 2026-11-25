@@ -20,11 +20,20 @@ WORD = "hallucinating"
 
 
 def main() -> int:
+    word = WORD.strip()
+    if not word or len(word) > 99 or any(ch.isspace() for ch in word):
+        print(
+            "error: WORD must be 1-99 chars, a single token with no whitespace",
+            file=sys.stderr,
+        )
+        return 1
     out_dir = os.environ.get("OUTPUT_DIR", "/output")
     os.makedirs(out_dir, exist_ok=True)
     path = os.path.join(out_dir, "entry.txt")
-    with open(path, "w", encoding="utf-8") as f:
-        f.write(WORD)
+    tmp_path = path + ".tmp"
+    with open(tmp_path, "w", encoding="utf-8") as f:
+        f.write(word)
+    os.replace(tmp_path, path)
     return 0
 
 
